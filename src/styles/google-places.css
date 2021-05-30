@@ -1,0 +1,4 @@
+.pac-container,
+.pac-item {
+    width: inherit !important;
+}
