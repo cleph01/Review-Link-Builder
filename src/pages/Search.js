@@ -164,7 +164,10 @@ function Search() {
                 <div>
                     <p>
                         If Business Not Found on Google API,{" "}
-                        <span onClick={() => setdisplayManualPid(true)}>
+                        <span
+                            style={{ onHover: "pointer" }}
+                            onClick={() => setdisplayManualPid(true)}
+                        >
                             <u>Click Here</u>
                         </span>
                     </p>
