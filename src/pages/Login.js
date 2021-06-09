@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { useHistory } from "react-router-dom";
+
+import axios from "axios";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -14,6 +17,9 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+
+// import logo
+import companyLogo from "../images/logo_w_name.png";
 
 function Copyright() {
     return (
@@ -53,9 +59,24 @@ function Login() {
 
     const history = useHistory();
 
-    const handleLogin = () => {
-        history.push("/search");
+    const [userCredentials, setUserCredentials] = useState({});
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        await axios
+            .post("http://localhost:5000/api/auth/login", userCredentials)
+            .then((res) => {
+                // localStorage.setItem("token", res.message.token);
+                console.log("Axios Response: ", res.data);
+                // history.push("/search");
+            })
+            .catch((error) => {
+                console.log("Axiox error: ", error);
+            });
     };
+
+    console.log("User Credentials: ", userCredentials);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -76,6 +97,12 @@ function Login() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        onChange={(e) => {
+                            setUserCredentials({
+                                ...userCredentials,
+                                email: e.target.value,
+                            });
+                        }}
                     />
                     <TextField
                         variant="outlined"
@@ -87,6 +114,12 @@ function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={(e) => {
+                            setUserCredentials({
+                                ...userCredentials,
+                                password: e.target.value,
+                            });
+                        }}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}

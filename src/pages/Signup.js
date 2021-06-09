@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { useHistory } from "react-router-dom";
+
+import axios from "axios";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -53,7 +56,22 @@ function Signup() {
 
     const history = useHistory();
 
-    const handleSignup = () => {
+    const [userCredentials, setUserCredentials] = useState({});
+
+    const handleSignup = async (e) => {
+        e.preventDefault();
+
+        await axios
+            .post("http://localhost:5000/api/auth/login", userCredentials)
+            .then((res) => {
+                // localStorage.setItem("token", res.message.token);
+                console.log("Axios Response: ", res.data);
+                // history.push("/search");
+            })
+            .catch((error) => {
+                console.log("Axiox error: ", error);
+            });
+
         history.push("/search");
     };
 
@@ -67,7 +85,7 @@ function Signup() {
                 </Typography>
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12}>
                             <TextField
                                 autoComplete="fname"
                                 name="firstName"
@@ -77,19 +95,15 @@ function Signup() {
                                 id="firstName"
                                 label="First Name"
                                 autoFocus
+                                onChange={(e) => {
+                                    setUserCredentials({
+                                        ...userCredentials,
+                                        name: e.target.value,
+                                    });
+                                }}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="lastName"
-                                label="Last Name"
-                                name="lastName"
-                                autoComplete="lname"
-                            />
-                        </Grid>
+
                         <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
@@ -99,6 +113,12 @@ function Signup() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                onChange={(e) => {
+                                    setUserCredentials({
+                                        ...userCredentials,
+                                        name: e.target.value,
+                                    });
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -111,6 +131,12 @@ function Signup() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                onChange={(e) => {
+                                    setUserCredentials({
+                                        ...userCredentials,
+                                        password: e.target.value,
+                                    });
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -137,7 +163,7 @@ function Signup() {
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
-                            <Link href="/" variant="body2">
+                            <Link href="/login" variant="body2">
                                 Already have an account? Sign in
                             </Link>
                         </Grid>
