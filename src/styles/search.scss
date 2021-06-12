@@ -1,8 +1,19 @@
+body {
+    background-color: #fafafa;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
 
+    .header {
+        width: 100%;
+        margin: 20px;
+        padding-right: 20px;
+        display: flex;
+        justify-content: flex-end;
+    }
     .autocomplete {
         width: 80%;
 
@@ -14,7 +25,8 @@
         }
     }
 
-    .container__input {
+    .container__input,
+    .manual-pid input {
         width: 100%;
         padding: 12px 20px;
         margin: 25px 0;
@@ -29,6 +41,30 @@
         }
     }
 
+    .card-wrapper {
+        /* Add shadows to create the "card" effect */
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+        padding: 20px 10px;
+        /* Add some padding inside the card container */
+        h2 {
+            padding: 2px 16px;
+        }
+    }
+
+    .reviews {
+        font-size: 0.875rem;
+        color: rgba(0, 0, 0, 0.54);
+        font-weight: 300;
+        line-height: 1.43;
+        letter-spacing: 0.01071em;
+    }
+
+    .create-link,
+    .photos-link {
+        color: #3f51b5;
+    }
+
     .photos {
         display: flex;
         flex-direction: column;
@@ -39,11 +75,7 @@
     .manual-pid {
         width: 100%;
         padding: 12px 20px;
-        margin: 25px 0;
-        display: inline-block;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
+        margin: 15px 35px;
         text-align: center;
 
         input::placeholder {

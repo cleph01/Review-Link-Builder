@@ -33,12 +33,18 @@ function Home() {
                         to put their interests first.
                     </p>
                     <div className="auth-buttons">
-                        <button onClick={() => history.push("/login")}>
+                        <div
+                            className="buttons"
+                            onClick={() => history.push("/login")}
+                        >
                             Login
-                        </button>
-                        <button onClick={() => history.push("/signup")}>
+                        </div>
+                        <div
+                            className="buttons"
+                            onClick={() => history.push("/signup")}
+                        >
                             Signup
-                        </button>
+                        </div>
                     </div>
                 </div>
                 <div className="right-wrapper">

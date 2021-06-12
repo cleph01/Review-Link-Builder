@@ -1,32 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 
+import { useHistory } from "react-router-dom";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import GOOGLE_API_KEY from "../constants/key";
 
 import "../styles/google-places.css";
 import "../styles/search.scss";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-
-import axios from "axios";
-
-const useStyles = makeStyles({
-    root: {
-        width: "90%",
-    },
-    media: {
-        height: 340,
-    },
-});
-
 function Search() {
-    const classes = useStyles();
+    const history = useHistory();
 
     const [loaded, setLoaded] = useState(false);
     const [query, setQuery] = useState({});
@@ -35,6 +19,7 @@ function Search() {
     const [reviews, setReviews] = useState({});
     const autoCompleteRef = useRef(null);
 
+    const [displayCard, setDisplayCard] = useState(false);
     const [displayReviews, setDisplayReviews] = useState(false);
     const [displayPhotos, setDisplayPhotos] = useState(false);
 
@@ -96,6 +81,8 @@ function Search() {
                     }
                 }
             );
+
+            setDisplayCard(true);
         } else {
             console.log("BAD RESPONSE OBJECT AT PHOTOS");
         }
@@ -144,6 +131,12 @@ function Search() {
 
     return (
         <div className="container">
+            <div className="header">
+                <FontAwesomeIcon
+                    icon="bars"
+                    onClick={() => history.push("/profile")}
+                />
+            </div>
             {/* Section - Google AutoComplete */}
             <div
                 className="autocomplete"
@@ -166,57 +159,41 @@ function Search() {
                         If Business Not Found on Google API,{" "}
                         <span
                             style={{ onHover: "pointer" }}
-                            onClick={() => setdisplayManualPid(true)}
+                            onClick={() => {
+                                setdisplayManualPid(true);
+                                setDisplayPhotos(false);
+                            }}
                         >
                             <u>Click Here</u>
                         </span>
                     </p>
                 </div>
-                <div>
-                    <Card className={classes.root}>
-                        <CardActionArea>
-                            <CardMedia
-                                className={classes.media}
-                                image={
-                                    photoUrls[0] ||
-                                    "https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0"
-                                }
-                                title="Contemplative Reptile"
-                            />
-                            <CardContent>
-                                <Typography
-                                    gutterBottom
-                                    variant="h5"
-                                    component="h2"
-                                >
-                                    <div>{query.name || "Business Name"}</div>
-                                    <div>
-                                        {query.formatted_address ||
-                                            "Business Address"}
-                                    </div>
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="textSecondary"
-                                    component="p"
-                                >
-                                    There are {reviews.length || "0"} reviews.
-                                </Typography>
-                            </CardContent>
-                        </CardActionArea>
-                        <CardActions>
-                            <Button size="small" color="primary">
-                                Create Link
-                            </Button>
-                            <Button
-                                size="small"
-                                color="primary"
-                                onClick={() => setDisplayPhotos(!displayPhotos)}
-                            >
-                                See All ({photoUrls.length}) Photos
-                            </Button>
-                        </CardActions>
-                    </Card>
+
+                <div
+                    className="card-wrapper"
+                    style={{ display: displayCard ? "flex" : "none" }}
+                >
+                    <div>
+                        {photoUrls.length > 0 ? (
+                            <img src={photoUrls[0]} alt="1" />
+                        ) : (
+                            "No Photo"
+                        )}
+                    </div>
+                    <h2>
+                        <div>{query.name}</div>
+                        <div>{query.formatted_address}</div>
+                    </h2>
+                    <div className="reviews">
+                        There are {reviews.length || "0"} reviews.
+                    </div>
+                    <div className="create-link">Create Link</div>
+                    <div
+                        className="photos-link"
+                        onClick={() => setDisplayPhotos(!displayPhotos)}
+                    >
+                        See All ({photoUrls.length}) Photos
+                    </div>
                 </div>
             </div>
 
@@ -239,7 +216,6 @@ function Search() {
                         );
                     })}
             </div>
-            <hr />
 
             {/* Section - Enter Manual Pid */}
 
@@ -247,7 +223,8 @@ function Search() {
                 className="manual-pid"
                 style={{ display: displayManualPid ? "block" : "none" }}
             >
-                <p>Enter Google Place Id (PID) Below:</p>
+                <h3>Business Not Found on Google API?</h3>
+                <p>Enter Google Place Id (PID) Below 👇</p>
 
                 <input
                     onChange={handlePidChange}

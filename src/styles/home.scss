@@ -13,7 +13,7 @@ body {
 
         .logo {
             margin: auto 20px;
-            background-color: #aaaaaa;
+            background-color: #e56135;
             border-radius: 10px;
 
             img {
@@ -30,7 +30,7 @@ body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #aaaaaa;
+            background-color: #e56135;
 
             li {
                 margin: 10px 20px;
@@ -47,7 +47,7 @@ body {
 
         .left-wrapper {
             width: 50%;
-            margin: 100px 20px;
+            margin-left: 8%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -64,18 +64,20 @@ body {
                 align-items: center;
                 margin-top: 14px;
 
-                button {
+                .buttons {
                     margin: 0px 5px;
+                    text-align: center;
+                    min-width: 268px;
                     padding: 10px;
-                    border-radius: 8px;
-                    background-color: #aaaaaa;
+                    border-radius: 36px;
+                    background-color: #e56135;
                     color: #ffffff;
                 }
             }
         }
 
         .right-wrapper {
-            margin-right: 20px;
+            margin-right: 10%;
             display: flex;
             align-items: center;
             justify-content: center;
