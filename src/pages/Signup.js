@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+
+import UserContext from "../context/user";
 
 import { useHistory } from "react-router-dom";
 
 import axios from "axios";
 
+// START Material-UI imports
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -17,6 +20,9 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+// END Material-UI imports
+
+import "../styles/auth.scss";
 
 function Copyright() {
     return (
@@ -56,24 +62,71 @@ function Signup() {
 
     const history = useHistory();
 
-    const [userCredentials, setUserCredentials] = useState({});
+    const { dispatch } = useContext(UserContext);
+
+    const initialState = {
+        name: "",
+        email: "",
+        password: "",
+        isSubmitting: false,
+        errorMessage: null,
+    };
+
+    const [userData, setUserData] = useState(initialState);
+
+    const handleInputChange = (event) => {
+        setUserData({
+            ...userData,
+            [event.target.name]: event.target.value,
+        });
+    };
 
     const handleSignup = async (e) => {
         e.preventDefault();
 
+        setUserData({
+            ...userData,
+            isSubmitting: true,
+            errorMessage: null,
+        });
+
         await axios
-            .post("http://localhost:5000/api/auth/login", userCredentials)
+            .post("http://localhost:5000/api/auth/signup", {
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+            })
             .then((res) => {
-                // localStorage.setItem("token", res.message.token);
-                console.log("Axios Response: ", res.data);
-                // history.push("/search");
+                if (res.status === 201) {
+                    return res.data;
+                } else {
+                    console.log("Response Error: ", res);
+                    throw res;
+                }
+            })
+            .then((responseData) => {
+                const { message } = responseData;
+
+                console.log("Succes Message: ", message);
+
+                dispatch({
+                    type: "SIGNUP",
+                    payload: message,
+                });
             })
             .catch((error) => {
-                console.log("Axiox error: ", error);
+                console.log("Axios Post Error: ", error);
+                setUserData({
+                    ...userData,
+                    isSumbitting: false,
+                    errorMessage: error.message || error.statusText,
+                });
             });
 
-        history.push("/search");
+        // history.push("/search");
     };
+
+    console.log("User Signup: ", userData);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -86,21 +139,21 @@ function Signup() {
                 <form className={classes.form} noValidate>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
+                            {userData.errorMessage && (
+                                <div className="form-error">
+                                    {userData.errorMessage}
+                                </div>
+                            )}
                             <TextField
-                                autoComplete="fname"
-                                name="firstName"
+                                autoComplete="name"
+                                name="name"
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="firstName"
+                                id="name"
                                 label="First Name"
                                 autoFocus
-                                onChange={(e) => {
-                                    setUserCredentials({
-                                        ...userCredentials,
-                                        name: e.target.value,
-                                    });
-                                }}
+                                onChange={handleInputChange}
                             />
                         </Grid>
 
@@ -113,12 +166,7 @@ function Signup() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
-                                onChange={(e) => {
-                                    setUserCredentials({
-                                        ...userCredentials,
-                                        name: e.target.value,
-                                    });
-                                }}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -131,12 +179,7 @@ function Signup() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
-                                onChange={(e) => {
-                                    setUserCredentials({
-                                        ...userCredentials,
-                                        password: e.target.value,
-                                    });
-                                }}
+                                onChange={handleInputChange}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -158,13 +201,14 @@ function Signup() {
                         color="primary"
                         className={classes.submit}
                         onClick={handleSignup}
+                        disabled={userData.isSubmitting}
                     >
-                        Sign Up
+                        {userData.isSubmitting ? "Loading..." : "Signup"}
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
                             <Link href="/login" variant="body2">
-                                Already have an account? Sign in
+                                Already have an account? Log in
                             </Link>
                         </Grid>
                     </Grid>

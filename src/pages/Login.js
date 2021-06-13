@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+
+import UserContext from "../context/user";
 
 import { useHistory } from "react-router-dom";
 
 import axios from "axios";
 
+// START Material-UI imports
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -17,9 +20,9 @@ import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+// END Material-UI imports
 
-// import logo
-import companyLogo from "../images/logo_w_name.png";
+import "../styles/auth.scss";
 
 function Copyright() {
     return (
@@ -59,24 +62,74 @@ function Login() {
 
     const history = useHistory();
 
-    const [userCredentials, setUserCredentials] = useState({});
+    const { dispatch } = useContext(UserContext);
+
+    const initialState = {
+        email: "",
+        password: "",
+        isSubmitting: false,
+        errorMessage: null,
+    };
+
+    const [userData, setUserData] = useState(initialState);
+
+    const handleInputChange = (event) => {
+        setUserData({
+            ...userData,
+            [event.target.name]: event.target.value,
+        });
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
+        setUserData({
+            ...userData,
+            isSubmitting: true,
+            errorMessage: null,
+        });
+
         await axios
-            .post("http://localhost:5000/api/auth/login", userCredentials)
+            .post("http://localhost:5000/api/auth/login", {
+                email: userData.email,
+                password: userData.password,
+            })
             .then((res) => {
-                // localStorage.setItem("token", res.message.token);
-                console.log("Axios Response: ", res.data);
-                // history.push("/search");
+                if (res.status === 200) {
+                    return res.data;
+                } else {
+                    console.log("Response Error: ", res);
+                    throw res;
+                }
+            })
+            .then((responseData) => {
+                console.log("Succes Message: ", responseData);
+
+                dispatch({
+                    type: "LOGIN",
+                    payload: responseData,
+                });
             })
             .catch((error) => {
-                console.log("Axiox error: ", error);
+                console.log("Axiox error: ", error.response.data);
+
+                if (error.response.status === 401) {
+                    setUserData({
+                        ...userData,
+                        isSumbitting: false,
+                        errorMessage: error.response.data,
+                    });
+                } else {
+                    setUserData({
+                        ...userData,
+                        isSumbitting: false,
+                        errorMessage: error.message || error.statusText,
+                    });
+                }
             });
     };
 
-    console.log("User Credentials: ", userCredentials);
+    console.log("User: ", userData);
 
     return (
         <Container component="main" maxWidth="xs">
@@ -87,6 +140,11 @@ function Login() {
                     Log in
                 </Typography>
                 <form className={classes.form} noValidate>
+                    {userData.errorMessage && (
+                        <div className="form-error">
+                            {userData.errorMessage}
+                        </div>
+                    )}
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -97,12 +155,7 @@ function Login() {
                         name="email"
                         autoComplete="email"
                         autoFocus
-                        onChange={(e) => {
-                            setUserCredentials({
-                                ...userCredentials,
-                                email: e.target.value,
-                            });
-                        }}
+                        onChange={handleInputChange}
                     />
                     <TextField
                         variant="outlined"
@@ -114,12 +167,7 @@ function Login() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
-                        onChange={(e) => {
-                            setUserCredentials({
-                                ...userCredentials,
-                                password: e.target.value,
-                            });
-                        }}
+                        onChange={handleInputChange}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
@@ -132,8 +180,9 @@ function Login() {
                         color="primary"
                         className={classes.submit}
                         onClick={handleLogin}
+                        disabled={userData.isSubmitting}
                     >
-                        Log In
+                        {userData.isSubmitting ? "Loading..." : "Login"}
                     </Button>
                     <Grid container>
                         <Grid item xs>
@@ -143,7 +192,7 @@ function Login() {
                         </Grid>
                         <Grid item>
                             <Link href="/signup" variant="body2">
-                                {"Don't have an account? Sign Up"}
+                                Don't have an account? Sign Up
                             </Link>
                         </Grid>
                     </Grid>

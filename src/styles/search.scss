@@ -13,6 +13,14 @@ body {
         padding-right: 20px;
         display: flex;
         justify-content: flex-end;
+
+        .hamburger-menu {
+            font-size: 33px;
+
+            :hover {
+                cursor: pointer;
+            }
+        }
     }
     .autocomplete {
         width: 80%;
@@ -41,6 +49,10 @@ body {
         }
     }
 
+    .no-place-id-display .activate-link:hover {
+        cursor: pointer;
+    }
+
     .card-wrapper {
         /* Add shadows to create the "card" effect */
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -58,11 +70,13 @@ body {
         font-weight: 300;
         line-height: 1.43;
         letter-spacing: 0.01071em;
+        margin-bottom: 10px;
     }
 
     .create-link,
     .photos-link {
         color: #3f51b5;
+        margin-bottom: 10px;
     }
 
     .photos {

@@ -8,16 +8,20 @@ function LinkResult(props) {
     return (
         <div className="container">
             <div className="card-wrapper">
-                <div className="left-wrapper">
-                    <h2>{props.business.businessName}</h2>
-                    <p>{props.business.address}</p>
+                <div className="body-wrapper">
+                    <div className="left-wrapper">
+                        <h2>{props.business.businessName}</h2>
+                        <p>{props.business.address}</p>
+                    </div>
+                    <div className="right-wrapper">
+                        <div className="link-list-image">
+                            <img src={props.business.photoUrl} alt="1" />
+                        </div>
+                    </div>
+                </div>
+                <div className="footer">
                     <p> Review Link: {props.business.placeId}</p>
                     <p> Map Link: {props.business.mapLink}</p>
-                </div>
-                <div className="right-wrapper">
-                    <div className="link-list-image">
-                    <img src={props.business.photoUrl} alt="1" />
-                    </div>
                 </div>
             </div>
         </div>

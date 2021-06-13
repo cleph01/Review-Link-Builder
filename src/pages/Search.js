@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 
 import { useHistory } from "react-router-dom";
+
+import UserContext from "../context/user";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -12,11 +14,14 @@ import "../styles/search.scss";
 function Search() {
     const history = useHistory();
 
+    const { state } = useContext(UserContext);
+
     const [loaded, setLoaded] = useState(false);
     const [query, setQuery] = useState({});
     const [pid, setPid] = useState("");
     const [photoUrls, setPhotoUrl] = useState([]);
     const [reviews, setReviews] = useState({});
+    const [website, setWebsite] = useState("");
     const autoCompleteRef = useRef(null);
 
     const [displayCard, setDisplayCard] = useState(false);
@@ -75,9 +80,13 @@ function Search() {
                         status ===
                         window.google.maps.places.PlacesServiceStatus.OK
                     ) {
-                        console.log(place.reviews);
+                        console.log("Reviews getDetails: ", place.reviews);
+
+                        console.log("Website getDetails: ", place.website);
 
                         setReviews(place.reviews);
+
+                        setWebsite(place.website);
                     }
                 }
             );
@@ -88,7 +97,7 @@ function Search() {
         }
 
         console.log("Query Result: ", queryResult);
-        console.log("Photos Array: ", photoUrls);
+
         console.log("Reviews: ", reviews);
     };
 
@@ -129,10 +138,20 @@ function Search() {
         );
     }, [loaded]);
 
+    const handleCreateLink = () => {
+        console.log("Link Created");
+    };
+
+    console.log("Photos Array: ", photoUrls);
+
+    console.log("User: ", state.user);
+
     return (
         <div className="container">
             <div className="header">
+                <div>{state.user.name}</div>
                 <FontAwesomeIcon
+                    className="hamburger-menu"
                     icon="bars"
                     onClick={() => history.push("/profile")}
                 />
@@ -154,11 +173,11 @@ function Search() {
                     value={query.name}
                 />
 
-                <div>
+                <div className="no-place-id-display">
                     <p>
                         If Business Not Found on Google API,{" "}
                         <span
-                            style={{ onHover: "pointer" }}
+                            className="activate-link"
                             onClick={() => {
                                 setdisplayManualPid(true);
                                 setDisplayPhotos(false);
@@ -181,13 +200,24 @@ function Search() {
                         )}
                     </div>
                     <h2>
-                        <div>{query.name}</div>
-                        <div>{query.formatted_address}</div>
+                        <div>{query.name || ""}</div>
+                        <div>
+                            {query.formatted_address
+                                ? query.formatted_address.split(",")[0]
+                                : ""}
+                        </div>
+                        <div>
+                            {query.formatted_address
+                                ? query.formatted_address.split(",").slice(1, 3)
+                                : ""}
+                        </div>
                     </h2>
                     <div className="reviews">
                         There are {reviews.length || "0"} reviews.
                     </div>
-                    <div className="create-link">Create Link</div>
+                    <div className="create-link" onClick={handleCreateLink}>
+                        Create Link
+                    </div>
                     <div
                         className="photos-link"
                         onClick={() => setDisplayPhotos(!displayPhotos)}
