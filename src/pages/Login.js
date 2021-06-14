@@ -109,6 +109,8 @@ function Login() {
                     type: "LOGIN",
                     payload: responseData,
                 });
+
+                history.push('/search');
             })
             .catch((error) => {
                 console.log("Axiox error: ", error.response.data);

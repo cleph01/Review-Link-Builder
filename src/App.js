@@ -3,6 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as ROUTES from "./constants/routes";
 import UserContext from "./context/user";
 
+// START import protected Routes
+import {
+    SearchRoute,
+    ProfileRoute,
+} from "./protected-routes/protected-routes.js";
+// END import protected Routes
+
 // START FontAwesome
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -86,8 +93,15 @@ function App() {
                         <Route path={ROUTES.LOGIN} component={Login} />
                         <Route path={ROUTES.SIGN_UP} component={Signup} />
 
-                        <Route path={ROUTES.SEARCH} component={Search} />
-                        <Route path={ROUTES.PROFILE} component={Profile} />
+                        <SearchRoute path={ROUTES.SEARCH} component={Search} />
+                        <ProfileRoute
+                            path={ROUTES.PROFILE}
+                            component={Profile}
+                        />
+
+                        {/* <Route path={ROUTES.SEARCH} component={Search} />
+                        <Route path={ROUTES.PROFILE} component={Profile} /> */}
+
                         <Route component={NotFound} />
                     </Switch>
                 </Suspense>

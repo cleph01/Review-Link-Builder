@@ -113,6 +113,8 @@ function Signup() {
                     type: "SIGNUP",
                     payload: message,
                 });
+
+                history.push("/search");
             })
             .catch((error) => {
                 console.log("Axios Post Error: ", error);
