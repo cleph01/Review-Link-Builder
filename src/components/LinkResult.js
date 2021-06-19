@@ -3,25 +3,23 @@ import React from "react";
 import "../styles/link-list.scss";
 
 function LinkResult(props) {
-    console.log("Props: ", props);
+    console.log("Link as Props: ", props);
 
     return (
-        <div className="container">
+        <div className="link-item-container">
             <div className="card-wrapper">
                 <div className="body-wrapper">
                     <div className="left-wrapper">
-                        <h2>{props.business.businessName}</h2>
+                        <h2>{props.business.business_name}</h2>
                         <p>{props.business.address}</p>
-                    </div>
-                    <div className="right-wrapper">
-                        <div className="link-list-image">
-                            <img src={props.business.photoUrl} alt="1" />
-                        </div>
+                        <p>
+                            {props.business.city}, {props.business.state}
+                        </p>
                     </div>
                 </div>
                 <div className="footer">
-                    <p> Review Link: {props.business.placeId}</p>
-                    <p> Map Link: {props.business.mapLink}</p>
+                    <p> Review Link: {props.business.review_link}</p>
+                    <p> Map Link:</p>
                 </div>
             </div>
         </div>

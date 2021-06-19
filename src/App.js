@@ -2,13 +2,18 @@ import { lazy, Suspense, useReducer } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as ROUTES from "./constants/routes";
 import UserContext from "./context/user";
+import BusinessContext from "./context/business";
 
 // START import protected Routes
 import {
     SearchRoute,
     ProfileRoute,
+    ReviewRoute,
 } from "./protected-routes/protected-routes.js";
 // END import protected Routes
+
+import AuthReducer from "./reducers/auth-reducer/auth-reducer.js";
+import BusinessReducer from "./reducers/business-reducer/business-reducer.js";
 
 // START FontAwesome
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -30,57 +35,18 @@ const NotFound = lazy(() => import("./pages/Not-Found.js"));
 const Login = lazy(() => import("./pages/Login.js"));
 const Signup = lazy(() => import("./pages/Signup.js"));
 const Profile = lazy(() => import("./pages/Profile.js"));
+const Review = lazy(() => import("./pages/Review.js"));
 // END Lazy Rendering functions
-
-// START Reducer function
-const reducer = (state, action) => {
-    switch (action.type) {
-        case "SIGNUP":
-            localStorage.setItem("user", JSON.stringify(action.payload.id[0]));
-            localStorage.setItem("token", JSON.stringify(action.payload.token));
-
-            return {
-                ...state,
-                isAuthenticated: true,
-                user: action.payload.user,
-                token: action.payload.token,
-            };
-
-        case "LOGIN":
-            console.log("LOGIN PAYLOAD: ", action.payload);
-
-            localStorage.setItem("user", JSON.stringify(action.payload.id));
-            localStorage.setItem("token", JSON.stringify(action.payload.token));
-
-            return {
-                ...state,
-                isAuthenticated: true,
-                user: action.payload.user,
-                token: action.payload.token,
-            };
-
-        case "LOGOUT":
-            localStorage.clear();
-            return {
-                ...state,
-                isAuthenticated: false,
-                user: null,
-            };
-
-        default:
-            return state;
-    }
-};
-// END Reducer function
 
 const initialState = {
     isAuthenticated: false,
-    user: null,
+    id: null,
     token: null,
+    name: null,
 };
 
 function App() {
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const [state, dispatch] = useReducer(AuthReducer, initialState);
 
     console.log("Load up: ", state);
 
@@ -98,7 +64,10 @@ function App() {
                             path={ROUTES.PROFILE}
                             component={Profile}
                         />
-
+                        <ReviewRoute
+                            path={ROUTES.REVIEW_PAGE}
+                            component={Review}
+                        />
                         {/* <Route path={ROUTES.SEARCH} component={Search} />
                         <Route path={ROUTES.PROFILE} component={Profile} /> */}
 

@@ -1,5 +1,8 @@
+@import "./variables/variables";
+
 body {
-    background-color: #fafafa;
+    color: $text-color;
+    background-image: $background-gradient;
 }
 .container {
     display: flex;
@@ -13,8 +16,6 @@ body {
 
         .logo {
             margin: auto 20px;
-            background-color: #e56135;
-            border-radius: 10px;
 
             img {
                 width: 75px;
@@ -27,66 +28,57 @@ body {
             justify-content: center;
             width: 300px;
             list-style-type: none;
-            margin: 0;
-            padding: 0;
+            margin: 0px 10px;
+            padding: 10px;
             overflow: hidden;
-            background-color: #e56135;
 
             li {
                 margin: 10px 20px;
-                color: #f0f0f0;
+                padding: 12px;
+                border-radius: 10px;
+                color: $text-color;
+            }
+
+            :hover {
+                background-color: $button-background;
             }
         }
     }
 
     .body-wrapper {
         display: flex;
-
+        flex-direction: column;
+        align-items: center;
         justify-content: space-between;
         width: 100%;
 
-        .left-wrapper {
-            width: 50%;
-            margin-left: 8%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-
-            p {
-                text-align: justify;
-            }
-
-            .auth-buttons {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-top: 14px;
-
-                .buttons {
-                    margin: 0px 5px;
-                    text-align: center;
-                    min-width: 268px;
-                    padding: 10px;
-                    border-radius: 36px;
-                    background-color: #e56135;
-                    color: #ffffff;
-                }
-            }
+        p {
+            width: 33%;
+            text-align: justify;
         }
 
-        .right-wrapper {
-            margin-right: 10%;
+        .auth-buttons {
+            width: 100%;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            margin-top: 14px;
 
-            img {
-                width: 350px;
-                height: auto;
-                border-radius: 50px;
+            .buttons {
+                margin: 0px 5px;
+                text-align: center;
+                min-width: 268px;
+                padding: 10px;
+                border-radius: 36px;
+                background-color: $button-background;
+                color: $text-color;
             }
         }
+    }
+
+    img {
+        width: 350px;
+        height: auto;
+        border-radius: 50px;
     }
 }

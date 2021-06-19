@@ -1,26 +1,41 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+@import "./variables/variables";
 
-    .header {
-        width: 100%;
-        display: flex;
-        justify-content: flex-end;
+body {
+    color: $text-color;
 
-        .search-icon {
-            margin: 25px;
-            font-size: 25px;
-        }
-    }
-
-    .link-list {
+    .container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        margin-top: 25px;
-        width: 90%;
+
+        font-size: 1.5rem;
+        background-color: #222222;
+        min-height: 100vh;
+
+        .header {
+            width: 100%;
+            margin: 20px 20px;
+            padding: 0px 20px;
+            display: flex;
+            justify-content: space-between;
+
+            .search-icon {
+                margin: 25px;
+                font-size: 25px;
+
+                :hover {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin-top: 25px;
+            width: 90%;
+        }
     }
 }

@@ -4,9 +4,9 @@ import { useHistory } from "react-router-dom";
 
 import UserContext from "../context/user";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
 
-import GOOGLE_API_KEY from "../constants/key";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import "../styles/google-places.css";
 import "../styles/search.scss";
@@ -18,9 +18,11 @@ function Search() {
 
     const [loaded, setLoaded] = useState(false);
     const [query, setQuery] = useState({});
+    const [linkState, setLinkState] = useState({});
+
     const [pid, setPid] = useState("");
     const [photoUrls, setPhotoUrl] = useState([]);
-    const [reviews, setReviews] = useState({});
+    const [reviews, setReviews] = useState([]);
     const [website, setWebsite] = useState("");
     const autoCompleteRef = useRef(null);
 
@@ -101,19 +103,21 @@ function Search() {
         console.log("Reviews: ", reviews);
     };
 
-    // Load Google Script
-    useEffect(() => {
-        const scriptTag = document.createElement("script");
-        scriptTag.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
-        scriptTag.addEventListener("load", () => setLoaded(true));
-        document.body.appendChild(scriptTag);
-    }, []);
+    // DECIDED AGAINST LOADING Google Script DYNAMICALLY
+    // KEPT GETTING ERROR SAYING "LOADED MAPS API MULTIPLE TIMES"
+
+    // useEffect(() => {
+    //     const scriptTag = document.createElement("script");
+    //     scriptTag.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
+    //     scriptTag.addEventListener("load", () => setLoaded(true));
+    //     document.body.appendChild(scriptTag);
+    // }, []);
 
     // If Script Loaded, Initialize AutoComplete Object
     useEffect(() => {
-        if (!loaded) return;
+        // if (!loaded) return;
 
-        console.log("Loaded: ", loaded);
+        // console.log("Loaded: ", loaded);
         // Script is Loaded
         // Perform Google API call here
         const autoComplete = new window.google.maps.places.Autocomplete(
@@ -138,23 +142,91 @@ function Search() {
         );
     }, [loaded]);
 
-    const handleCreateLink = () => {
-        console.log("Link Created");
+    // Send Business data to backend for verification
+    const handleCreateLink = (event) => {
+        const reviewLink = `https://search.google.com/local/writereview?placeid=${query.place_id}`;
+
+        const [address, city, state] = query.formatted_address.split(",");
+
+        const msgBody = {
+            business_name: query.name,
+            street_address: address.trim(),
+            city: city.trim(),
+            state: state.trim(),
+            website,
+            user_id: localStorage.getItem("user"),
+            review_link: reviewLink,
+            place_id: query.place_id,
+        };
+
+        setLinkState({
+            ...linkState,
+            isFetching: true,
+        });
+
+        axios
+            .post(`http://localhost:5000/api/links`, msgBody)
+            .then((res) => {
+                if (res.status === 200) {
+                    return res.data;
+                } else {
+                    console.log("Response Error: ", res);
+                    throw res;
+                }
+            })
+            .then((responseData) => {
+                console.log("Succes Message: ", responseData);
+
+                setLinkState({
+                    ...linkState,
+                    isFetching: false,
+                    links: responseData,
+                });
+            })
+            .catch((error) => {
+                console.log("Axiox error: ", error.response.data);
+
+                if (error.response.status === 401) {
+                    setLinkState({
+                        ...linkState,
+                        isFetching: false,
+                        errorMessage: error.response.data,
+                    });
+                } else {
+                    setLinkState({
+                        ...linkState,
+                        isFetching: false,
+                        errorMessage: error.message || error.statusText,
+                    });
+                }
+            });
+
+        console.log("Review Link: ", reviewLink);
+
+        console.log("Axios Body Msg: ", msgBody);
+    };
+
+    const handleShowReviewPage = (event) => {
+        const business_name = query.name.replace(" ", "-");
+
+        history.push(`review/${query.place_id}?b=${business_name}`);
     };
 
     console.log("Photos Array: ", photoUrls);
 
-    console.log("User: ", state.user);
+    console.log("State: ", state);
+
+    const userName = localStorage.getItem("name").slice(1, -1);
 
     return (
         <div className="container">
             <div className="header">
-                <div>{state.user.name}</div>
                 <FontAwesomeIcon
                     className="hamburger-menu"
                     icon="bars"
                     onClick={() => history.push("/profile")}
                 />
+                <div className="user-name">Welcome Back, {userName}!</div>
             </div>
             {/* Section - Google AutoComplete */}
             <div
@@ -189,10 +261,10 @@ function Search() {
                 </div>
 
                 <div
-                    className="card-wrapper"
+                    className="card-container"
                     style={{ display: displayCard ? "flex" : "none" }}
                 >
-                    <div>
+                    <div className="card-wrapper">
                         {photoUrls.length > 0 ? (
                             <img src={photoUrls[0]} alt="1" />
                         ) : (
@@ -213,10 +285,20 @@ function Search() {
                         </div>
                     </h2>
                     <div className="reviews">
-                        There are {reviews.length || "0"} reviews.
+                        There are {reviews.length || "0"} reviews.{" "}
+                        <span
+                            onClick={() => {
+                                setDisplayReviews(!displayReviews);
+                            }}
+                        >
+                            <u>See Reviews</u>
+                        </span>
                     </div>
                     <div className="create-link" onClick={handleCreateLink}>
-                        Create Link
+                        {linkState.isFetching ? "Loading" : "Create Link"}
+                    </div>
+                    <div className="review-page" onClick={handleShowReviewPage}>
+                        Show Review Page
                     </div>
                     <div
                         className="photos-link"
@@ -242,6 +324,23 @@ function Search() {
                                     alt="Local"
                                     src={photoUrl || ""}
                                 />
+                            </div>
+                        );
+                    })}
+            </div>
+
+            {/* Section - See Reviews */}
+            <div
+                className="review-container"
+                style={{ display: displayReviews ? "flex" : "none" }}
+            >
+                {reviews &&
+                    reviews.map((review, index) => {
+                        return (
+                            <div className="review-wrapper" key={index}>
+                                <p>Author: {review.author_name}</p>
+                                <p>Rating: {review.rating}</p>
+                                <p>Review: {review.text}</p>
                             </div>
                         );
                     })}

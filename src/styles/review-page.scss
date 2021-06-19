@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 33px;
+
+    .smiley {
+        font-size: 33px;
+    }
+    .review-button {
+        margin-top: 50px;
+        text-align: center;
+        min-width: 268px;
+        padding: 10px;
+        border-radius: 36px;
+        background-color: #e56135;
+        color: #ffffff;
+
+        text-decoration: none;
+        color: #ffffff;
+
+        a:link,
+        a:visited {
+            color: #ffffff;
+        }
+    }
+}

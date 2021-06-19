@@ -25,30 +25,29 @@ function Home() {
                 </div>
             </div>
             <div className="body-wrapper">
-                <div className="left-wrapper">
-                    <h3>Win a Prospects Trust With Value</h3>
-                    <p>
-                        Smartseed's Review Link Builder helps build rapport from
-                        the jump. Show them you care enough about their business
-                        to put their interests first.
-                    </p>
-                    <div className="auth-buttons">
-                        <div
-                            className="buttons"
-                            onClick={() => history.push("/login")}
-                        >
-                            Login
-                        </div>
-                        <div
-                            className="buttons"
-                            onClick={() => history.push("/signup")}
-                        >
-                            Signup
-                        </div>
-                    </div>
-                </div>
-                <div className="right-wrapper">
+                <div className="image-wrapper">
                     <img src={salesman} alt="Salesman" />{" "}
+                </div>
+
+                <h3>Win a Prospects Trust With Value</h3>
+                <p>
+                    Smartseed's Review Link Builder helps build rapport from the
+                    jump. Show them you care enough about their business to put
+                    their interests first.
+                </p>
+                <div className="auth-buttons">
+                    <div
+                        className="buttons"
+                        onClick={() => history.push("/login")}
+                    >
+                        Login
+                    </div>
+                    <div
+                        className="buttons"
+                        onClick={() => history.push("/signup")}
+                    >
+                        Signup
+                    </div>
                 </div>
             </div>
         </div>

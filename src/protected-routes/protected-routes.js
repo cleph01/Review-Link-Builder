@@ -26,4 +26,17 @@ const ProfileRoute = ({ component: Component, ...rest }) => (
     />
 );
 
-export { SearchRoute, ProfileRoute };
+const ReviewRoute = ({ component: Component, ...rest }) => (
+    <Route
+        {...rest}
+        render={(props) =>
+            localStorage.getItem("token") ? (
+                <Component {...props} />
+            ) : (
+                <Redirect to="/login" />
+            )
+        }
+    />
+);
+
+export { SearchRoute, ProfileRoute, ReviewRoute };
