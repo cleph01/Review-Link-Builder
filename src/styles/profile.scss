@@ -23,8 +23,21 @@ body {
                 margin: 25px;
                 font-size: 25px;
 
-                :hover {
+                &:hover {
                     cursor: pointer;
+                }
+            }
+
+            .logout-btn {
+                margin: 25px;
+                font-size: 25px;
+                padding: 10px;
+                border-radius: 10px;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: slategray;
+                    opacity: 75%;
                 }
             }
         }

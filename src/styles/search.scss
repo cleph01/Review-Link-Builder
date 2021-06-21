@@ -19,6 +19,24 @@ body {
         display: flex;
         justify-content: space-between;
 
+        .logout__container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .logout-btn {
+                font-size: 25px;
+                padding: 3px 5px;
+                border-radius: 10px;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: slategray;
+                    opacity: 99%;
+                }
+            }
+        }
+
         .user-name {
             font-size: 16px;
             font-weight: bold;
@@ -79,22 +97,46 @@ body {
                 padding: 2px 16px;
             }
         }
+
+        .clipboard__container {
+            width: 60%;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: row;
+            border: 1px solid grey;
+            padding: 2px;
+
+            input {
+                flex-grow: 2;
+                /* And hide the input's outline, so the form looks like the outline */
+                border: none;
+                background-color: #222222;
+                color: #ffffff;
+            }
+
+            button {
+                /* Just a little styling to make it pretty */
+                border: 1px solid blue;
+                background: blue;
+                color: white;
+            }
+        }
     }
 
     .reviews {
         font-size: 0.875rem;
-        color: rgba(0, 0, 0, 0.54);
+
         font-weight: 300;
         line-height: 1.43;
         letter-spacing: 0.01071em;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
     }
 
     .create-link,
     .photos-link,
     .review-page {
         color: #3f51b5;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .review-container {

@@ -8,17 +8,20 @@ import axios from "axios";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
 import "../styles/google-places.css";
 import "../styles/search.scss";
 
 function Search() {
     const history = useHistory();
 
-    const { state } = useContext(UserContext);
+    const { state, dispatch } = useContext(UserContext);
 
     const [loaded, setLoaded] = useState(false);
     const [query, setQuery] = useState({});
     const [linkState, setLinkState] = useState({});
+    const [clipboardValue, setClipboardValue] = useState({ copied: false });
 
     const [pid, setPid] = useState("");
     const [photoUrls, setPhotoUrl] = useState([]);
@@ -144,9 +147,11 @@ function Search() {
 
     // Send Business data to backend for verification
     const handleCreateLink = (event) => {
-        const reviewLink = `https://search.google.com/local/writereview?placeid=${query.place_id}`;
+        // const reviewLink = `https://search.google.com/local/writereview?placeid=${query.place_id}`;
 
         const [address, city, state] = query.formatted_address.split(",");
+
+        const reviewLink = query.name.replaceAll(" ", "-");
 
         const msgBody = {
             business_name: query.name,
@@ -179,8 +184,13 @@ function Search() {
 
                 setLinkState({
                     ...linkState,
+                    reviewLink: responseData.review_link,
                     isFetching: false,
-                    links: responseData,
+                });
+
+                setClipboardValue({
+                    copied: true,
+                    reviewLink: `https://ThankYou.SmartSeed.com/${responseData.review_link}`,
                 });
             })
             .catch((error) => {
@@ -201,8 +211,6 @@ function Search() {
                 }
             });
 
-        console.log("Review Link: ", reviewLink);
-
         console.log("Axios Body Msg: ", msgBody);
     };
 
@@ -212,11 +220,21 @@ function Search() {
         history.push(`review/${query.place_id}?b=${business_name}`);
     };
 
+    const handleLogout = () => {
+        dispatch({
+            type: "LOGOUT",
+        });
+
+        history.push("/login");
+    };
+
+    const userName = localStorage.getItem("name").slice(1, -1);
+
     console.log("Photos Array: ", photoUrls);
 
     console.log("State: ", state);
 
-    const userName = localStorage.getItem("name").slice(1, -1);
+    console.log("Link State: ", linkState);
 
     return (
         <div className="container">
@@ -226,7 +244,12 @@ function Search() {
                     icon="bars"
                     onClick={() => history.push("/profile")}
                 />
-                <div className="user-name">Welcome Back, {userName}!</div>
+                <div className="logout__container">
+                    <div className="user-name">Welcome Back, {userName}!</div>
+                    <div className="logout-btn" onClick={handleLogout}>
+                        Logout
+                    </div>
+                </div>
             </div>
             {/* Section - Google AutoComplete */}
             <div
@@ -297,6 +320,33 @@ function Search() {
                     <div className="create-link" onClick={handleCreateLink}>
                         {linkState.isFetching ? "Loading" : "Create Link"}
                     </div>
+                    {linkState.reviewLink && (
+                        <div className="clipboard__container">
+                            <input
+                                className="clipboard_input"
+                                type="text"
+                                value={clipboardValue.reviewLink}
+                                readOnly
+                            />
+                            <CopyToClipboard
+                                text={clipboardValue.reviewLink}
+                                onCopy={() => {
+                                    setClipboardValue({
+                                        ...clipboardValue,
+                                        copied: true,
+                                    });
+
+                                    console.log(
+                                        "Copied",
+                                        clipboardValue.reviewLink,
+                                        clipboardValue.copied
+                                    );
+                                }}
+                            >
+                                <button className="copy-btn">copy</button>
+                            </CopyToClipboard>
+                        </div>
+                    )}
                     <div className="review-page" onClick={handleShowReviewPage}>
                         Show Review Page
                     </div>

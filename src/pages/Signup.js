@@ -106,6 +106,7 @@ function Signup() {
                     name="name"
                     id="name"
                     required
+                    onChange={handleInputChange}
                 />
                 <label htmlFor="email" className="form__label">
                     First Name
@@ -119,6 +120,7 @@ function Signup() {
                     name="email"
                     id="email"
                     required
+                    onChange={handleInputChange}
                 />
                 <label htmlFor="email" className="form__label">
                     Email
@@ -132,13 +134,18 @@ function Signup() {
                     name="password"
                     id="password"
                     required
+                    onChange={handleInputChange}
                 />
                 <label htmlFor="password" className="form__label">
                     Password
                 </label>
             </div>
 
-            <div className="auth__btn">
+            <div
+                className="auth__btn"
+                disabled={userData.isSubmitting ? true : false}
+                onClick={handleSignup}
+            >
                 {userData.isSubmitting ? "Loading..." : "Signup"}
             </div>
 

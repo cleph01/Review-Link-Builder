@@ -9,6 +9,7 @@ import axios from "axios";
 import Logo from "../images/logo_w_name.png";
 
 import "../styles/auth.scss";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 function Copyright() {
     return (
@@ -93,7 +94,7 @@ function Login() {
             });
     };
 
-    console.log("State: ", state);
+    console.log("User Data: ", userData);
 
     return (
         <div className="form__container">
@@ -129,7 +130,11 @@ function Login() {
                     Password
                 </label>
             </div>
-            <div className="auth__btn" onClick={handleLogin}>
+            <div
+                className="auth__btn"
+                disabled={userData.isSubmitting ? true : false}
+                onClick={handleLogin}
+            >
                 {userData.isSubmitting ? "Loading..." : "Login"}
             </div>
             <div className="redirect__link">

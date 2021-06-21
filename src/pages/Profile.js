@@ -18,25 +18,6 @@ import LinkResult from "../components/LinkResult";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// const links = [
-//     {
-//         businessName: "ACME",
-//         address: "123 Main St., Stamford, CT 06830",
-//         placeId: "placeId-1",
-//         mapLink: "map-link-1",
-//         photoUrl:
-//             "https://maps.googleapis.com/maps/api/place/js/PhotoService.GetPhoto?1sATtYBwJ091Jg9VGemPe0kKA8OE28td_HKC9pipGwbFesRZxHvTdQDNCd9MUTYAJWMrs2P7W8vPFzFKhrpJ1itttuhMLlE0ju38qX1ACs3W6CS8DBxVb_-UsgQxqAvLicL4tnmClcyqQ-xRquyC-Qxzby0HkPmRmPKxQnRwdu3fAEw-KlWw8H&3u350&4u350&5m1&2e1&callback=none&key=AIzaSyDk80PqHyEMq3a1Ow8vNusNPw1yn5vMNoE&token=123839",
-//     },
-//     {
-//         businessName: "Fratellis",
-//         address: "345 South St., Stamford, CT 06830",
-//         placeId: "placeId-2",
-//         mapLink: "map-link-2-jklajflkasjflkjsdfljsfjlsajfljsdfljsfljslfkj",
-//         photoUrl:
-//             "https://maps.googleapis.com/maps/api/place/js/PhotoService.GetPhoto?1sATtYBwLjCMfnJ6_hVZE5jE_XyNOTqiYeObt_rj9bLUb3wpssw2egK6xbpfxrm9xUP5X7Rp6QxQmZxElpO_2RKn9U7EMeizxLddo21eNZP2OjJZf_L60AfH09ck2OB0h3gFB6rrmLjPUxbLyf9henQE-mwglpqKcAj5Zii1ZtW-X3iF9KKveQ&3u350&4u350&5m1&2e1&callback=none&key=AIzaSyDk80PqHyEMq3a1Ow8vNusNPw1yn5vMNoE&token=63891",
-//     },
-// ];
-
 const initialLinkState = {
     links: null,
     isFetching: false,
@@ -48,11 +29,9 @@ function Profile() {
 
     const userId = localStorage.getItem("user");
 
-    const { user } = useContext(UserContext);
+    const { state, dispatch } = useContext(UserContext);
 
     const [linkState, setLinkState] = useState(initialLinkState);
-
-    console.log("Context User: ", user);
 
     // Fetch Links by User Id
     useEffect(() => {
@@ -101,6 +80,15 @@ function Profile() {
     }, []);
 
     console.log("Link State: ", linkState);
+
+    const handleLogout = () => {
+        dispatch({
+            type: "LOGOUT",
+        });
+
+        history.push("/login");
+    };
+
     return (
         <div className="container">
             <div className="header">
@@ -109,6 +97,9 @@ function Profile() {
                     icon="search"
                     onClick={() => history.push("/search")}
                 />
+                <div className="logout-btn" onClick={handleLogout}>
+                    Logout
+                </div>
             </div>
             <div className="link-list">
                 {linkState.links &&
