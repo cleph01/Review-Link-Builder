@@ -3,6 +3,10 @@ import { useParams, useLocation } from "react-router-dom";
 
 import "../styles/review-page.scss";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import ToolTip from "../components/ToolTip";
+
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }
@@ -18,6 +22,12 @@ function Review() {
 
     return (
         <div className="container">
+            <div className="header">
+                <ToolTip content="Copied!" direction="top">
+                    <FontAwesomeIcon icon="link" />
+                </ToolTip>
+            </div>
+
             <h2 className="business-name">{businessName}</h2>
             <p>Would Like to thank you for being an amazing customer</p>
             <div className="smiley">😃</div>

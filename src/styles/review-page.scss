@@ -4,6 +4,41 @@
     align-items: center;
     margin-top: 33px;
 
+    .header {
+        width: 100%;
+        padding: 10px 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        .logout__container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .logout-btn {
+                font-size: 25px;
+                padding: 3px 5px;
+                border-radius: 10px;
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: slategray;
+                    opacity: 99%;
+                }
+            }
+        }
+
+        .user-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+    }
+
     .smiley {
         font-size: 33px;
     }

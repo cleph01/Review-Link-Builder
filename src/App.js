@@ -23,9 +23,10 @@ import {
     faCoffee,
     faSearch,
     faBars,
+    faLink,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faBars, faSearch);
+library.add(faBars, faSearch, faLink);
 // END FontAwesome
 
 // START Lazy Rendering functions

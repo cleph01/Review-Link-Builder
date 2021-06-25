@@ -45,7 +45,7 @@ body {
         .hamburger-menu {
             font-size: 33px;
 
-            :hover {
+            &:hover {
                 cursor: pointer;
             }
         }
@@ -130,6 +130,12 @@ body {
         line-height: 1.43;
         letter-spacing: 0.01071em;
         margin-bottom: 20px;
+
+        span {
+            &:hover {
+                cursor: pointer;
+            }
+        }
     }
 
     .create-link,
@@ -137,6 +143,10 @@ body {
     .review-page {
         color: #3f51b5;
         margin-bottom: 15px;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 
     .review-container {
@@ -151,6 +161,8 @@ body {
             width: 90%;
             // justify-content: space-between;
             margin: 10px 25%;
+            border: 1px solid $primary;
+            border-radius: 10px;
 
             /* Add shadows to create the "card" effect */
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);

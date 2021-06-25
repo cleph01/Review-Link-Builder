@@ -314,7 +314,11 @@ function Search() {
                                 setDisplayReviews(!displayReviews);
                             }}
                         >
-                            <u>See Reviews</u>
+                            <u>
+                                {displayReviews
+                                    ? "Close Reviews"
+                                    : "See Reviews"}
+                            </u>
                         </span>
                     </div>
                     <div className="create-link" onClick={handleCreateLink}>
@@ -354,7 +358,9 @@ function Search() {
                         className="photos-link"
                         onClick={() => setDisplayPhotos(!displayPhotos)}
                     >
-                        See All ({photoUrls.length}) Photos
+                        {!displayPhotos
+                            ? "See All (" + photoUrls.length + ") Photos"
+                            : "Close Photo Display"}
                     </div>
                 </div>
             </div>
