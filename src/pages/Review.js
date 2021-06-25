@@ -1,5 +1,11 @@
 // import { Link } from "react-router";
+import React, { useState } from "react";
+
 import { useParams, useLocation } from "react-router-dom";
+
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
+import { isChrome } from "react-device-detect";
 
 import "../styles/review-page.scss";
 
@@ -18,14 +24,50 @@ function Review() {
 
     const businessName = query.get("b").replace("-", " ");
 
+    const reviewLink = `https://ThankYou.SmartSeed.com/${query.get("l")}`;
+
     const googleUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
 
+    const [clipboardValue, setClipboardValue] = useState({
+        reviewLink: reviewLink,
+    });
+
+    console.log("Is Chrome: ", isChrome);
     return (
         <div className="container">
             <div className="header">
-                <ToolTip content="Copied!" direction="top">
-                    <FontAwesomeIcon icon="link" />
-                </ToolTip>
+                <CopyToClipboard
+                    text={clipboardValue.reviewLink}
+                    // text="boo"
+                    onCopy={() => {
+                        setClipboardValue({
+                            ...clipboardValue,
+                            copied: true,
+                        });
+
+                        console.log("Copied", clipboardValue);
+                    }}
+                >
+                    <button>
+                        <ToolTip
+                            content="Copied!"
+                            direction="top"
+                            link={reviewLink}
+                        >
+                            <FontAwesomeIcon icon="link" />
+                        </ToolTip>
+                    </button>
+                </CopyToClipboard>
+                <div>
+                    <a
+                        href={`sms:&body=Here%27s%20Your%20Link:%20${
+                            " " + reviewLink
+                        }`}
+                    >
+                        Send Text
+                    </a>
+                    {/* <a href={`sms:&body=link`}>Send Text</a> */}
+                </div>
             </div>
 
             <h2 className="business-name">{businessName}</h2>

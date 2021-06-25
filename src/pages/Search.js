@@ -217,7 +217,9 @@ function Search() {
     const handleShowReviewPage = (event) => {
         const business_name = query.name.replace(" ", "-");
 
-        history.push(`review/${query.place_id}?b=${business_name}`);
+        history.push(
+            `review/${query.place_id}?b=${business_name}&l=${linkState.reviewLink}`
+        );
     };
 
     const handleLogout = () => {
@@ -321,7 +323,11 @@ function Search() {
                             </u>
                         </span>
                     </div>
-                    <div className="create-link" onClick={handleCreateLink}>
+                    <div
+                        className="create-link"
+                        onClick={handleCreateLink}
+                        disabled={linkState.reviewLink ? false : true}
+                    >
                         {linkState.isFetching ? "Loading" : "Create Link"}
                     </div>
                     {linkState.reviewLink && (
