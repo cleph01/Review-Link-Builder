@@ -17,6 +17,18 @@ body {
             height: auto;
         }
 
+        .error__msg {
+            border: 1px solid #cb4154;
+            text-align: center;
+            padding: 12px;
+            margin: 25px 0px;
+            border-radius: 10px;
+
+            .error-icon {
+                color: #cb4154;
+            }
+        }
+
         .form__group {
             position: relative;
             padding: 15px 0 0;

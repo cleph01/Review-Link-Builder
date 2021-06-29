@@ -8,8 +8,9 @@ import axios from "axios";
 
 import Logo from "../images/logo_w_name.png";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import "../styles/auth.scss";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 function Copyright() {
     return (
@@ -52,46 +53,54 @@ function Login() {
             errorMessage: null,
         });
 
-        await axios
-            .post("http://localhost:5000/api/auth/login", {
-                email: userData.email,
-                password: userData.password,
-            })
-            .then((res) => {
-                if (res.status === 200) {
-                    return res.data;
-                } else {
-                    console.log("Response Error: ", res);
-                    throw res;
-                }
-            })
-            .then((responseData) => {
-                console.log("Succes Message: ", responseData);
-
-                dispatch({
-                    type: "LOGIN",
-                    payload: responseData,
-                });
-
-                history.push("/search");
-            })
-            .catch((error) => {
-                console.log("Axiox error: ", error.response.data);
-
-                if (error.response.status === 401) {
-                    setUserData({
-                        ...userData,
-                        isSumbitting: false,
-                        errorMessage: error.response.data,
-                    });
-                } else {
-                    setUserData({
-                        ...userData,
-                        isSumbitting: false,
-                        errorMessage: error.message || error.statusText,
-                    });
-                }
+        // Simple Form Validation
+        if (userData.email === "" || userData.password === "") {
+            setUserData({
+                ...userData,
+                errorMessage: "Fields Cannot Be Empty",
             });
+        } else {
+            await axios
+                .post("http://localhost:5000/api/auth/login", {
+                    email: userData.email,
+                    password: userData.password,
+                })
+                .then((res) => {
+                    if (res.status === 200) {
+                        return res.data;
+                    } else {
+                        console.log("Response Error: ", res);
+                        throw res;
+                    }
+                })
+                .then((responseData) => {
+                    console.log("Succes Message: ", responseData);
+
+                    dispatch({
+                        type: "LOGIN",
+                        payload: responseData,
+                    });
+
+                    history.push("/search");
+                })
+                .catch((error) => {
+                    console.log("Axios error: ", error.response.data);
+
+                    if (error.response.status === 401) {
+                        setUserData({
+                            ...userData,
+                            isSumbitting: false,
+                            errorMessage: error.response.data,
+                        });
+                    } else {
+                        setUserData({
+                            ...userData,
+                            isSumbitting: false,
+                            errorMessage: error.message || error.statusText,
+                        });
+                    }
+                });
+        }
     };
 
     console.log("User Data: ", userData);
@@ -102,6 +111,16 @@ function Login() {
                 <img src={Logo} alt="logo" />
             </div>
             <div>Login</div>
+            {/* Error Message */}
+            {userData.errorMessage && (
+                <div className="error__msg">
+                    <FontAwesomeIcon
+                        className="error-icon"
+                        icon="exclamation-triangle"
+                    />
+                    {"  " + userData.errorMessage}
+                </div>
+            )}
             <div className="form__group field">
                 <input
                     type="input"

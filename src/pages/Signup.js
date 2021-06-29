@@ -8,6 +8,8 @@ import axios from "axios";
 
 import Logo from "../images/logo_w_name.png";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import "../styles/auth.scss";
 
 function Copyright() {
@@ -52,6 +54,13 @@ function Signup() {
             errorMessage: null,
         });
 
+        // Simple Form Validation
+        if (userData.email === "" || userData.password === "") {
+            setUserData({
+                ...userData,
+                errorMessage: "Fields Cannot Be Empty",
+            });
+        } else {
         await axios
             .post("http://localhost:5000/api/auth/signup", {
                 name: userData.name,
@@ -86,7 +95,7 @@ function Signup() {
                     errorMessage: error.message || error.statusText,
                 });
             });
-
+        }
         // history.push("/search");
     };
 
@@ -98,6 +107,16 @@ function Signup() {
                 <img src={Logo} alt="logo" />
             </div>
             <div>Signup</div>
+            {/* Error Message */}
+            {userData.errorMessage && (
+                <div className="error__msg">
+                    <FontAwesomeIcon
+                        className="error-icon"
+                        icon="exclamation-triangle"
+                    />
+                    {"  " + userData.errorMessage}
+                </div>
+            )}
             <div className="form__group field">
                 <input
                     type="input"
