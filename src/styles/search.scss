@@ -25,9 +25,10 @@ body {
             align-items: center;
 
             .logout-btn {
-                font-size: 25px;
+                font-size: 16px;
                 padding: 3px 5px;
                 border-radius: 10px;
+                font-weight: bold;
 
                 &:hover {
                     cursor: pointer;
@@ -114,7 +115,7 @@ body {
                 color: #ffffff;
             }
 
-            button {
+            copy-btn {
                 /* Just a little styling to make it pretty */
                 border: 1px solid blue;
                 background: blue;

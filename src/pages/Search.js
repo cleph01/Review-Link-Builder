@@ -8,6 +8,8 @@ import axios from "axios";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import ToolTip from "../components/ToolTip";
+
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import "../styles/google-places.css";
@@ -51,6 +53,7 @@ function Search() {
 
         // if response status is ok
         if (queryResult.photos) {
+            // Save Place Select Results to Query Variable
             setQuery(queryResult);
 
             const photoArray = queryResult.photos.map((photo) => {
@@ -106,21 +109,8 @@ function Search() {
         console.log("Reviews: ", reviews);
     };
 
-    // DECIDED AGAINST LOADING Google Script DYNAMICALLY
-    // KEPT GETTING ERROR SAYING "LOADED MAPS API MULTIPLE TIMES"
-
-    // useEffect(() => {
-    //     const scriptTag = document.createElement("script");
-    //     scriptTag.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
-    //     scriptTag.addEventListener("load", () => setLoaded(true));
-    //     document.body.appendChild(scriptTag);
-    // }, []);
-
     // If Script Loaded, Initialize AutoComplete Object
     useEffect(() => {
-        // if (!loaded) return;
-
-        // console.log("Loaded: ", loaded);
         // Script is Loaded
         // Perform Google API call here
         const autoComplete = new window.google.maps.places.Autocomplete(
@@ -138,8 +128,6 @@ function Search() {
             }
         );
 
-        // autoComplete.setFields(["address_components", "formatted_address"]);
-
         autoComplete.addListener("place_changed", () =>
             handlePlaceSelect(autoComplete)
         );
@@ -151,16 +139,22 @@ function Search() {
 
         const [address, city, state] = query.formatted_address.split(",");
 
-        const reviewLink = query.name.replaceAll(" ", "-");
+        const business_name = query.name.trim();
+
+        let review_link = business_name.trim();
+
+        review_link = review_link.replaceAll(" ", "-");
+
+        review_link = review_link.replaceAll("&", "n");
 
         const msgBody = {
-            business_name: query.name,
+            business_name: business_name,
             street_address: address.trim(),
             city: city.trim(),
             state: state.trim(),
             website,
             user_id: localStorage.getItem("user"),
-            review_link: reviewLink,
+            review_link: review_link,
             place_id: query.place_id,
         };
 
@@ -194,13 +188,13 @@ function Search() {
                 });
             })
             .catch((error) => {
-                console.log("Axiox error: ", error.response.data);
+                console.log("Axiox error: ", error);
 
-                if (error.response.status === 401) {
+                if (error.status === 401) {
                     setLinkState({
                         ...linkState,
                         isFetching: false,
-                        errorMessage: error.response.data,
+                        errorMessage: error,
                     });
                 } else {
                     setLinkState({
@@ -241,13 +235,13 @@ function Search() {
     return (
         <div className="container">
             <div className="header">
-                <FontAwesomeIcon
+                {/* <FontAwesomeIcon
                     className="hamburger-menu"
                     icon="bars"
                     onClick={() => history.push("/profile")}
-                />
+                /> */}
+                <div className="user-name">Welcome Back, {userName}!</div>
                 <div className="logout__container">
-                    <div className="user-name">Welcome Back, {userName}!</div>
                     <div className="logout-btn" onClick={handleLogout}>
                         Logout
                     </div>
@@ -353,7 +347,16 @@ function Search() {
                                     );
                                 }}
                             >
-                                <button className="copy-btn">copy</button>
+                                <div>
+                                    <ToolTip
+                                        content="Copied!"
+                                        direction="top"
+                                        link={clipboardValue.reviewLink}
+                                    >
+                                        {/* <FontAwesomeIcon icon="link" /> */}
+                                        Copy Link
+                                    </ToolTip>
+                                </div>
                             </CopyToClipboard>
                         </div>
                     )}
@@ -424,7 +427,10 @@ function Search() {
                 />
                 <p>
                     Back to AutoComplete,{" "}
-                    <span onClick={() => setdisplayManualPid(false)}>
+                    <span
+                        className="activate-link"
+                        onClick={() => setdisplayManualPid(false)}
+                    >
                         <u>CLICK HERE</u>
                     </span>
                 </p>

@@ -36,29 +36,32 @@ function Review() {
     return (
         <div className="container">
             <div className="header">
-                <CopyToClipboard
-                    text={clipboardValue.reviewLink}
-                    // text="boo"
-                    onCopy={() => {
-                        setClipboardValue({
-                            ...clipboardValue,
-                            copied: true,
-                        });
+                <div className="btn">
+                    <CopyToClipboard
+                        text={clipboardValue.reviewLink}
+                        // text="boo"
+                        onCopy={() => {
+                            setClipboardValue({
+                                ...clipboardValue,
+                                copied: true,
+                            });
 
-                        console.log("Copied", clipboardValue);
-                    }}
-                >
-                    <button>
-                        <ToolTip
-                            content="Copied!"
-                            direction="top"
-                            link={reviewLink}
-                        >
-                            <FontAwesomeIcon icon="link" />
-                        </ToolTip>
-                    </button>
-                </CopyToClipboard>
-                <div>
+                            console.log("Copied", clipboardValue);
+                        }}
+                    >
+                        <div>
+                            <ToolTip
+                                content="Copied!"
+                                direction="top"
+                                link={reviewLink}
+                            >
+                                {/* <FontAwesomeIcon icon="link" /> */}
+                                Copy Link
+                            </ToolTip>
+                        </div>
+                    </CopyToClipboard>
+                </div>
+                <div className="btn">
                     <a
                         href={`sms:&body=Here%27s%20Your%20Link:%20${
                             " " + reviewLink

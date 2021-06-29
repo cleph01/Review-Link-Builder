@@ -8,23 +8,25 @@ function ToolTip(props) {
     const [active, setActive] = useState(false);
 
     const showTip = () => {
+        setActive(true);
+
         timeOut = setTimeout(() => {
-            setActive(true);
-        }, props.delay || 400);
+            setActive(false);
+        }, props.delay || 1000);
     };
 
-    const hideTip = () => {
-        clearInterval(timeOut);
+    // const hideTip = () => {
+    //     clearInterval(timeOut);
 
-        setActive(false);
-    };
+    //     setActive(false);
+    // };
 
     return (
         <div
             className="Tooltip-Wrapper"
             // When to show the tooltip
-            onMouseEnter={showTip}
-            onMouseLeave={hideTip}
+            onClick={showTip}
+            // onMouseLeave={hideTip}
         >
             {/* Wrapping */}
             {props.children}
