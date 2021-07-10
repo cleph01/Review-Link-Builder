@@ -141,12 +141,6 @@ function Search() {
 
         const business_name = query.name.trim();
 
-        let review_link = business_name.trim();
-
-        review_link = review_link.replaceAll(" ", "-");
-
-        review_link = review_link.replaceAll("&", "n");
-
         const msgBody = {
             business_name: business_name,
             street_address: address.trim(),
@@ -154,7 +148,6 @@ function Search() {
             state: state.trim(),
             website,
             user_id: localStorage.getItem("user"),
-            review_link: review_link,
             place_id: query.place_id,
         };
 
@@ -231,6 +224,8 @@ function Search() {
     console.log("State: ", state);
 
     console.log("Link State: ", linkState);
+
+    console.log("Query Data: ", query);
 
     return (
         <div className="container">
