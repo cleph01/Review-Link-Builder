@@ -51,6 +51,9 @@ function Search() {
         const businessObject = await autoComplete.getPlace();
         const queryResult = businessObject;
 
+        // clear Review Link state
+        setLinkState({});
+
         // if response status is ok
         if (queryResult.photos) {
             // Save Place Select Results to Query Variable
@@ -202,7 +205,9 @@ function Search() {
     };
 
     const handleShowReviewPage = (event) => {
-        const business_name = query.name.replace(" ", "-");
+        const business_name = query.name
+            .replaceAll(" ", "-")
+            .replaceAll("&", "n");
 
         history.push(
             `review/${query.place_id}?b=${business_name}&l=${linkState.reviewLink}`

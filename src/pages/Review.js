@@ -22,7 +22,15 @@ function Review() {
 
     const query = useQuery();
 
-    const businessName = query.get("b").replace("-", " ");
+    const businessName_arr = query.get("b").split("-");
+
+    for (let i = 0; i < businessName_arr.length - 1; i++) {
+        if (businessName_arr[i].length === 1 && businessName_arr[i] === "n") {
+            businessName_arr[i] = "&";
+        }
+    }
+
+    const businessName = businessName_arr.join(" ");
 
     const reviewLink = `https://ThankYou.SmartSeed.com/${query.get("l")}`;
 
