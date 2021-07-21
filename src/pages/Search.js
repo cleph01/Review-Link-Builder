@@ -252,8 +252,8 @@ function Search() {
                 className="autocomplete"
                 style={{ display: !displayManualPid ? "block" : "none" }}
             >
-                <div>
-                    <h3>Enter Name of Business below 👇</h3>
+                <div className="heading">
+                    <h4>Enter Name of Business below 👇</h4>
                 </div>
                 <label>Google Business Search Bar:</label>
                 <input
@@ -290,7 +290,7 @@ function Search() {
                             "No Photo"
                         )}
                     </div>
-                    <h2>
+                    <p>
                         <div>{query.name || ""}</div>
                         <div>
                             {query.formatted_address
@@ -302,7 +302,7 @@ function Search() {
                                 ? query.formatted_address.split(",").slice(1, 3)
                                 : ""}
                         </div>
-                    </h2>
+                    </p>
                     <div className="reviews">
                         There are {reviews.length || "0"} reviews.{" "}
                         <span
