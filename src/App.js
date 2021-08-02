@@ -28,9 +28,11 @@ import {
     faBars,
     faLink,
     faExclamationTriangle,
+    faCheckCircle,
+    faSpinner
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faBars, faSearch, faLink, faExclamationTriangle);
+library.add(faBars, faSearch, faLink, faExclamationTriangle, faCheckCircle, faSpinner);
 // END FontAwesome
 
 // START Lazy Rendering functions

@@ -37,6 +37,7 @@ function Signup() {
         password: "",
         isSubmitting: false,
         errorMessage: null,
+        successMessage: null,
     };
 
     const [userData, setUserData] = useState(initialState);
@@ -46,19 +47,24 @@ function Signup() {
             ...userData,
             [event.target.name]: event.target.value,
         });
+
+        localStorage.setItem(event.target.name, event.target.value);
     };
 
-    const handleSignup = async (e) => {
-        e.preventDefault();
-
+    const handleSignup = async () => {
         setUserData({
             ...userData,
             isSubmitting: true,
             errorMessage: null,
+            successMessage: null,
         });
 
+        const name = localStorage.getItem("name");
+        const email = localStorage.getItem("email");
+        const password = localStorage.getItem("password");
+
         // Simple Form Validation
-        if (userData.email === "" || userData.password === "") {
+        if (email === "" || password === "") {
             setUserData({
                 ...userData,
                 errorMessage: "Fields Cannot Be Empty",
@@ -66,9 +72,9 @@ function Signup() {
         } else {
             await axios
                 .post("http://localhost:5000/api/auth/signup", {
-                    name: userData.name,
-                    email: userData.email,
-                    password: userData.password,
+                    name: name,
+                    email: email,
+                    password: password,
                 })
                 .then((res) => {
                     if (res.status === 201) {
@@ -88,6 +94,14 @@ function Signup() {
                         payload: message,
                     });
 
+                    localStorage.removeItem("email");
+                    localStorage.removeItem("password");
+
+                    setUserData({
+                        ...userData,
+                        successMessage: "Approved! Logging You In...",
+                    });
+
                     history.push("/search");
                 })
                 .catch((error) => {
@@ -103,6 +117,10 @@ function Signup() {
     };
 
     console.log("User Signup: ", userData);
+
+    console.log("Storage Name: ", localStorage.getItem("name"));
+    console.log("Storage Email: ", localStorage.getItem("email"));
+    console.log("Storage Password: ", localStorage.getItem("password"));
 
     const [{ isPending }] = usePayPalScriptReducer();
 
@@ -126,6 +144,16 @@ function Signup() {
                         icon="exclamation-triangle"
                     />
                     {"  " + userData.errorMessage}
+                </div>
+            )}
+            {userData.successMessage && (
+                <div className="success__msg">
+                    <FontAwesomeIcon
+                        className="success-icon"
+                        icon="check-circle"
+                    />
+                    {"  " + userData.successMessage + "  "}
+                    <FontAwesomeIcon className="spinner" icon="spinner" />
                 </div>
             )}
             <div className="form__group field">
@@ -171,56 +199,65 @@ function Signup() {
                 </label>
             </div>
 
-            <div
+            {/* <div
                 className="auth__btn"
                 disabled={userData.isSubmitting ? true : false}
                 onClick={handleSignup}
             >
                 {userData.isSubmitting ? "Loading..." : "Signup"}
-            </div>
+            </div> */}
 
+            {isPending ? (
+                <FontAwesomeIcon className="spinner" icon="spinner" />
+            ) : (
+                <div className="paypal__btn">
+                    <PayPalButtons
+                        style={{ layout: "vertical" }}
+                        createOrder={(data, actions) => {
+                            return actions.order.create({
+                                purchase_units: [
+                                    {
+                                        amount: {
+                                            value: "2.00",
+                                        },
+                                    },
+                                ],
+                            });
+                        }}
+                        onApprove={async (data, actions) => {
+                            return await actions.order
+                                .capture()
+                                .then((approvedDetails) => {
+                                    setCapture(approvedDetails);
+
+                                    console.log(
+                                        "Transaction Complete: ",
+                                        approvedDetails
+                                    );
+
+                                    console.log(
+                                        "Approved Details: ",
+                                        approvedDetails
+                                    );
+
+                                    handleSignup();
+
+                                    setUserData({
+                                        ...userData,
+                                        successMessage:
+                                            "Approved! Logging You In...",
+                                    });
+                                });
+                        }}
+                    />
+                </div>
+            )}
             <div className="redirect__link">
                 <Link className="link" to="/login">
-                    Already have an account? Login
+                    Already have an account? <u>Login</u>
                 </Link>
             </div>
             <div className="copyright">{Copyright()}</div>
-
-            {isPurchasing ? (
-                <div>Processing Payment...</div>
-            ) : (
-                <PayPalButtons
-                    style={{ layout: "vertical" }}
-                    createOrder={(data, actions) => {
-                        return actions.order.create({
-                            purchase_units: [
-                                {
-                                    amount: {
-                                        value: "2.00",
-                                    },
-                                },
-                            ],
-                        });
-                    }}
-                    onApprove={async (data, actions) => {
-                        return await actions.order
-                            .capture()
-                            .then((approvedDetails) => {
-                                setCapture(approvedDetails);
-
-                                console.log(
-                                    "Transaction Complete: ",
-                                    approvedDetails
-                                );
-
-                                console.log(
-                                    "Approved Details: ",
-                                    approvedDetails
-                                );
-                            });
-                    }}
-                />
-            )}
         </div>
     );
 }

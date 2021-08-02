@@ -30,6 +30,32 @@ body {
             }
         }
 
+        .success__msg {
+            border: 1px solid #41cb58;
+            text-align: center;
+            padding: 12px;
+            margin: 25px 0px;
+            border-radius: 10px;
+
+            .success-icon {
+                color: #41cb58;
+            }
+
+            .spinner {
+                color: #41cb58;
+                animation: spin 2s linear infinite;
+
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+            }
+        }
+
         .form__group {
             position: relative;
             padding: 15px 0 0;
@@ -123,6 +149,10 @@ body {
                 pointer-events: none;
                 opacity: 0.7;
             }
+        }
+
+        .paypal__btn {
+            margin-top: 50px;
         }
 
         .redirect__link {

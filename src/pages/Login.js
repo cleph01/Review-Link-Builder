@@ -158,7 +158,7 @@ function Login() {
             </div>
             <div className="redirect__link">
                 <Link className="link" to="/signup">
-                    Don't have an account? Signup
+                    Don't have an account? <u>Signup</u>
                 </Link>
             </div>
             <div className="copyright">{Copyright()}</div>
