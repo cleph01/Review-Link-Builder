@@ -2,6 +2,9 @@ import React, { useState, useContext } from "react";
 
 import UserContext from "../context/user";
 
+// Paypal Checkout package
+import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+
 import { useHistory, Link } from "react-router-dom";
 
 import axios from "axios";
@@ -61,45 +64,53 @@ function Signup() {
                 errorMessage: "Fields Cannot Be Empty",
             });
         } else {
-        await axios
-            .post("http://localhost:5000/api/auth/signup", {
-                name: userData.name,
-                email: userData.email,
-                password: userData.password,
-            })
-            .then((res) => {
-                if (res.status === 201) {
-                    return res.data;
-                } else {
-                    console.log("Response Error: ", res);
-                    throw res;
-                }
-            })
-            .then((responseData) => {
-                const { message } = responseData;
+            await axios
+                .post("http://localhost:5000/api/auth/signup", {
+                    name: userData.name,
+                    email: userData.email,
+                    password: userData.password,
+                })
+                .then((res) => {
+                    if (res.status === 201) {
+                        return res.data;
+                    } else {
+                        console.log("Response Error: ", res);
+                        throw res;
+                    }
+                })
+                .then((responseData) => {
+                    const { message } = responseData;
 
-                console.log("Succes Message: ", message);
+                    console.log("Succes Message: ", message);
 
-                dispatch({
-                    type: "SIGNUP",
-                    payload: message,
+                    dispatch({
+                        type: "SIGNUP",
+                        payload: message,
+                    });
+
+                    history.push("/search");
+                })
+                .catch((error) => {
+                    console.log("Axios Post Error: ", error);
+                    setUserData({
+                        ...userData,
+                        isSumbitting: false,
+                        errorMessage: error.message || error.statusText,
+                    });
                 });
-
-                history.push("/search");
-            })
-            .catch((error) => {
-                console.log("Axios Post Error: ", error);
-                setUserData({
-                    ...userData,
-                    isSumbitting: false,
-                    errorMessage: error.message || error.statusText,
-                });
-            });
         }
         // history.push("/search");
     };
 
     console.log("User Signup: ", userData);
+
+    const [{ isPending }] = usePayPalScriptReducer();
+
+    console.log("isPending", isPending);
+
+    const [capturedDetails, setCapture] = useState();
+
+    const [isPurchasing, setPurchasing] = useState(false);
 
     return (
         <div className="form__container">
@@ -174,6 +185,42 @@ function Signup() {
                 </Link>
             </div>
             <div className="copyright">{Copyright()}</div>
+
+            {isPurchasing ? (
+                <div>Processing Payment...</div>
+            ) : (
+                <PayPalButtons
+                    style={{ layout: "vertical" }}
+                    createOrder={(data, actions) => {
+                        return actions.order.create({
+                            purchase_units: [
+                                {
+                                    amount: {
+                                        value: "2.00",
+                                    },
+                                },
+                            ],
+                        });
+                    }}
+                    onApprove={async (data, actions) => {
+                        return await actions.order
+                            .capture()
+                            .then((approvedDetails) => {
+                                setCapture(approvedDetails);
+
+                                console.log(
+                                    "Transaction Complete: ",
+                                    approvedDetails
+                                );
+
+                                console.log(
+                                    "Approved Details: ",
+                                    approvedDetails
+                                );
+                            });
+                    }}
+                />
+            )}
         </div>
     );
 }

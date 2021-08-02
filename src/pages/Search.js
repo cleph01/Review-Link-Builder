@@ -233,7 +233,7 @@ function Search() {
     console.log("Query Data: ", query);
 
     return (
-        <div className="container">
+        <div className="search__container">
             <div className="header">
                 {/* <FontAwesomeIcon
                     className="hamburger-menu"
@@ -290,7 +290,7 @@ function Search() {
                             "No Photo"
                         )}
                     </div>
-                    <p>
+                    <div>
                         <div>{query.name || ""}</div>
                         <div>
                             {query.formatted_address
@@ -302,7 +302,7 @@ function Search() {
                                 ? query.formatted_address.split(",").slice(1, 3)
                                 : ""}
                         </div>
-                    </p>
+                    </div>
                     <div className="reviews">
                         There are {reviews.length || "0"} reviews.{" "}
                         <span
@@ -317,11 +317,7 @@ function Search() {
                             </u>
                         </span>
                     </div>
-                    <div
-                        className="create-link"
-                        onClick={handleCreateLink}
-                        disabled={linkState.reviewLink ? false : true}
-                    >
+                    <div className="create-link" onClick={handleCreateLink}>
                         {linkState.isFetching ? "Loading" : "Create Link"}
                     </div>
                     {linkState.reviewLink && (
@@ -347,21 +343,29 @@ function Search() {
                                     );
                                 }}
                             >
-                                <div>
+                                <div className="copy-link-btn">
                                     <ToolTip
                                         content="Copied!"
                                         direction="top"
                                         link={clipboardValue.reviewLink}
                                     >
                                         {/* <FontAwesomeIcon icon="link" /> */}
-                                        Copy Link
+                                        <span className="copy-tooltip">
+                                            Copy
+                                        </span>
                                     </ToolTip>
                                 </div>
                             </CopyToClipboard>
                         </div>
                     )}
-                    <div className="review-page" onClick={handleShowReviewPage}>
-                        Show Review Page
+                    <div
+                        disabled={!linkState.reviewLink ? true : false}
+                        className="review-page"
+                        onClick={handleShowReviewPage}
+                    >
+                        {linkState.reviewLink
+                            ? "Show Review Page"
+                            : "Create Link \n to show Review Page"}
                     </div>
                     <div
                         className="photos-link"

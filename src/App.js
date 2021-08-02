@@ -15,6 +15,9 @@ import {
 import AuthReducer from "./reducers/auth-reducer/auth-reducer.js";
 import BusinessReducer from "./reducers/business-reducer/business-reducer.js";
 
+// Paypal Checkout package
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 // START FontAwesome
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -52,32 +55,44 @@ function App() {
 
     console.log("Load up: ", state);
 
-    return (
-        <UserContext.Provider value={{ state, dispatch }}>
-            <Router>
-                <Suspense fallback={<p>Loading...</p>}>
-                    <Switch>
-                        <Route exact path={ROUTES.HOME} component={Home} />
-                        <Route path={ROUTES.LOGIN} component={Login} />
-                        <Route path={ROUTES.SIGN_UP} component={Signup} />
+    const initialOptions = {
+        "client-id":
+            "ARaJiZis6nTJDNMxvi4MmqTIFLH0Bo3f9x3jbovK3fgcfDYcnbUhh7RUAdPbPXlUvtH6NmcluqsAawLn",
+        currency: "USD",
+        intent: "capture",
+    };
 
-                        <SearchRoute path={ROUTES.SEARCH} component={Search} />
-                        <ProfileRoute
-                            path={ROUTES.PROFILE}
-                            component={Profile}
-                        />
-                        <ReviewRoute
-                            path={ROUTES.REVIEW_PAGE}
-                            component={Review}
-                        />
-                        {/* <Route path={ROUTES.SEARCH} component={Search} />
+    return (
+        <PayPalScriptProvider options={initialOptions}>
+            <UserContext.Provider value={{ state, dispatch }}>
+                <Router>
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <Switch>
+                            <Route exact path={ROUTES.HOME} component={Home} />
+                            <Route path={ROUTES.LOGIN} component={Login} />
+                            <Route path={ROUTES.SIGN_UP} component={Signup} />
+
+                            <SearchRoute
+                                path={ROUTES.SEARCH}
+                                component={Search}
+                            />
+                            <ProfileRoute
+                                path={ROUTES.PROFILE}
+                                component={Profile}
+                            />
+                            <ReviewRoute
+                                path={ROUTES.REVIEW_PAGE}
+                                component={Review}
+                            />
+                            {/* <Route path={ROUTES.SEARCH} component={Search} />
                         <Route path={ROUTES.PROFILE} component={Profile} /> */}
 
-                        <Route component={NotFound} />
-                    </Switch>
-                </Suspense>
-            </Router>
-        </UserContext.Provider>
+                            <Route component={NotFound} />
+                        </Switch>
+                    </Suspense>
+                </Router>
+            </UserContext.Provider>
+        </PayPalScriptProvider>
     );
 }
 

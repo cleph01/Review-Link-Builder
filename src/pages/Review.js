@@ -42,7 +42,10 @@ function Review() {
 
     console.log("Is Chrome: ", isChrome);
     return (
-        <div className="container">
+        <div
+            className="review__container"
+            style={{ background: "#fff", color: "#37434f" }}
+        >
             <div className="header">
                 <div className="btn">
                     <CopyToClipboard
@@ -81,7 +84,7 @@ function Review() {
                 </div>
             </div>
 
-            <h2 className="business-name">{businessName}</h2>
+            <h4 className="business-name">{businessName}</h4>
             <p>Would Like to thank you for being an amazing customer</p>
             <div className="smiley">😃</div>
             <p>Please Click Below To leave a Google Review</p>
